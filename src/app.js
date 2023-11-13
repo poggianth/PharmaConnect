@@ -7,8 +7,8 @@ const port = 8081;
 import { Medicamentos } from "./models/Medicamentos.js";
 import { Itens_estoque } from "./models/Itens_estoque.js";
 import { Distancias } from "./models/Distancias.js";
-import { Clientes } from "./models/Clientes.js"
-import { Ordens_retirada } from "./models/Ordens_agendamento.js"
+import { Clientes } from "./models/Clientes.js";
+import { Ordens_retirada } from "./models/Ordens_agendamento.js";
 
 // Config JSON response
 app.use(express.json());
@@ -41,18 +41,23 @@ app.get("/medicamentos/consultar", (req, res) => {
     });
 });
 
-app.post("/medicamentos/consultar/unidades", consulta_medicamentos_outras_unidades);
+app.post(
+  "/medicamentos/consultar/unidades",
+  consulta_medicamentos_outras_unidades
+);
 
 app.post("/medicamentos/agendar_retirada", agendar_retirada);
 
-app.post("/ordens_retirada/consultar_ordens_retiradas", consultar_ordens_retiradas);
+app.post(
+  "/ordens_retirada/consultar_ordens_retiradas",
+  consultar_ordens_retiradas
+);
 
-app.post("/ordens_retirada/confirmar_ordem_retirada", confirmar_ordem_retirada)
+app.post("/ordens_retirada/confirmar_ordem_retirada", confirmar_ordem_retirada);
 
-
-async function consulta_medicamentos_outras_unidades(req, res){
+async function consulta_medicamentos_outras_unidades(req, res) {
   const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.body;
-  
+
   try {
     const itemEstoqueResult = await Itens_estoque.findAll({
       attributes: ["id_unidade_saude"],
@@ -68,7 +73,7 @@ async function consulta_medicamentos_outras_unidades(req, res){
       (item) => item.id_unidade_saude
     );
     console.log("id_unidades_com_remedio: " + id_unidades_com_remedio);
-  
+
     const unidades_proximas_disponiveis = await Distancias.findAll({
       attributes: ["id_unidade_saude_destino", "distancia_total"],
       where: {
@@ -80,7 +85,7 @@ async function consulta_medicamentos_outras_unidades(req, res){
       order: [["distancia_total", "ASC"]],
       limit: 3,
     });
-    
+
     res.json({
       unidades_proximas_disponiveis,
     });
@@ -90,14 +95,15 @@ async function consulta_medicamentos_outras_unidades(req, res){
   }
 }
 
-async function agendar_retirada(req, res){
-  const { id_unidade_atual, codigo_medicamento, qtd_desejada, cpf_cliente } = req.body;
+async function agendar_retirada(req, res) {
+  const { id_unidade_atual, codigo_medicamento, qtd_desejada, cpf_cliente } =
+    req.body;
 
-  try{
+  try {
     const cliente_requisitante = await Clientes.findOne({
       where: {
-        cpf: cpf_cliente
-      }
+        cpf: cpf_cliente,
+      },
     });
 
     const novo_agendamento = await Ordens_retirada.create({
@@ -105,67 +111,80 @@ async function agendar_retirada(req, res){
       codigo_medicamento: codigo_medicamento,
       qtd_solicitado: qtd_desejada,
       id_unidade_saude: id_unidade_atual,
-      retirado: false
-    })
+      retirado: false,
+    });
 
     console.log(`novo_agendamento: ${novo_agendamento}`);
-    res.json({novo_agendamento: novo_agendamento});
-  } catch (error){
+    res.json({ novo_agendamento: novo_agendamento });
+  } catch (error) {
     console.log(`Erro ao agendar retirada: ${error}`);
-    res.status(500).json({ error: "Erro interno no servidor"});
+    res.status(500).json({ error: "Erro interno no servidor" });
   }
 }
 
-async function consultar_ordens_retiradas(req, res){
+async function consultar_ordens_retiradas(req, res) {
   const { id_unidade } = req.body;
 
-  try{
+  try {
     const ordens_retidas = await Ordens_retirada.findAll({
       where: {
-        id_unidade_saude: id_unidade
-      }
+        id_unidade_saude: id_unidade,
+      },
     });
 
     console.log(`Ordens de retirada: ${ordens_retidas}`);
-    res.json({ordens_retidas: ordens_retidas});
-
-  } catch(error){
+    res.json({ ordens_retidas: ordens_retidas });
+  } catch (error) {
     console.log(`Erro ao consultar as ordens de retirada: ${error}`);
-    res.status(500).json({error: "Erro interno do servidor"});
+    res.status(500).json({ error: "Erro interno do servidor" });
   }
 }
 
-async function confirmar_ordem_retirada(req, res){
+async function confirmar_ordem_retirada(req, res) {
   const { id_ordem_retirada } = req.body;
 
-  try{
+  try {
     const ordem_retirada = await Ordens_retirada.findOne({
-      where:{
-        id: id_ordem_retirada
-      }
+      where: {
+        id: id_ordem_retirada,
+      },
     });
 
-    console.log(ordem_retirada);
+    // Verifica se a retirada já foi confirmada
+    if (ordem_retirada.retirado) {
+      res.status(400).json({ aviso: "A ordem de retirada já foi confirmada!" });
+    } else {
+      const item_estoque = await Itens_estoque.findOne({
+        where: {
+          codigo_medicamento: ordem_retirada.codigo_medicamento,
+          id_unidade_saude: ordem_retirada.id_unidade_saude,
+          qtd_atual: {
+            [Op.gte]: ordem_retirada.qtd_solicitado,
+          },
+        },
+      });
 
-    ordem_retirada.set({
-      retirado: true
-    });
+      // Subtrai a quantidade em estoque
+      item_estoque.set({
+        qtd_atual: item_estoque.qtd_atual - ordem_retirada.qtd_solicitado,
+      });
 
-    await ordem_retirada.save();
+      await item_estoque.save();
 
-    console.log(ordem_retirada);
-    res.json({ordem_retirada: ordem_retirada});
+      // Confirma a ordem de retirada
+      ordem_retirada.set({
+        retirado: true,
+      });
 
-  } catch(error){
+      await ordem_retirada.save();
+
+      res.json({ ordem_retirada: ordem_retirada });
+    }
+  } catch (error) {
     console.log(`Erro ao alterar o status da retirada: ${error}`);
-    res.status(500).json({error: "Erro interno do servidor"});
+    res.status(500).json({ error: "Erro interno do servidor" });
   }
 }
-
-
-
-
-
 
 app.listen(port, () => {
   console.log(`App rodando na porta: ${port}`);
