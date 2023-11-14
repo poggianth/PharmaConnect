@@ -4,11 +4,11 @@ const app = express();
 const port = 3000;
 
 // Models
-import { Medicamentos } from "./models/Medicamentos.js";
-import { Itens_estoque } from "./models/Itens_estoque.js";
-import { Distancias } from "./models/Distancias.js";
-import { Clientes } from "./models/Clientes.js";
-import { Ordens_retirada } from "./models/Ordens_agendamento.js";
+import { Medicamentos } from "./src/models/Medicamentos.js";
+import { Itens_estoque } from "./src/models/Itens_estoque.js";
+import { Distancias } from "./src/models/Distancias.js";
+import { Clientes } from "./src/models/Clientes.js";
+import { Ordens_retirada } from "./src/models/Ordens_agendamento.js";
 
 // Config JSON response
 app.use(express.json());
