@@ -1,7 +1,7 @@
 import express from "express";
 import { Op } from "sequelize";
 const app = express();
-const port = 8081;
+const port = 3000;
 
 // Models
 import { Medicamentos } from "./models/Medicamentos.js";
@@ -18,14 +18,29 @@ app.get("/", (req, res) => {
   res.send("Rota principal!");
 });
 
-app.get("/medicamentos/consultar", (req, res) => {
+app.get("/medicamentos/consultar/:codigo_remedio", (req, res) => {
+  Medicamentos.findAll({
+    where: {
+      codigo: req.params.codigo_remedio,
+    },
+  })
+    .then((medicamento) => {
+      res.send(medicamento);
+    })
+    .catch((error) => {
+      console.log(`Erro ao consultar medicamento: ${error}`);
+      res.status(500).json({ error: "" });
+    });
+});
+
+app.post("/medicamentos/consultar_estoque", (req, res) => {
   // id da unidade de saúde atual - será pego via sessão
-  const { id_unidade_atual, codigo, qtd_desejada } = req.body;
+  const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.body;
 
   Itens_estoque.findAll({
     where: {
       id_unidade_saude: id_unidade_atual,
-      codigo_medicamento: codigo,
+      codigo_medicamento: codigo_medicamento,
       qtd_atual: {
         [Op.gte]: qtd_desejada,
       },
