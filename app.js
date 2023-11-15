@@ -8,7 +8,7 @@ import { Medicamentos } from "./src/models/Medicamentos.js";
 import { Itens_estoque } from "./src/models/Itens_estoque.js";
 import { Distancias } from "./src/models/Distancias.js";
 import { Clientes } from "./src/models/Clientes.js";
-import { Ordens_retirada } from "./src/models/Ordens_agendamento.js";
+import { Ordens_retirada } from "./src/models/Ordens_retirada.js";
 
 // Config JSON response
 app.use(express.json());
@@ -182,6 +182,7 @@ async function confirmar_ordem_retirada(req, res) {
       // Subtrai a quantidade em estoque
       item_estoque.set({
         qtd_atual: item_estoque.qtd_atual - ordem_retirada.qtd_solicitado,
+        dt_retirada: Date.now()
       });
 
       await item_estoque.save();

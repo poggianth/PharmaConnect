@@ -9,5 +9,5 @@ export const Ordens_retirada = sequelize.define('ordens_agendamento', {
     qtd_solicitado: Sequelize.INTEGER,
     id_unidade_saude: Sequelize.INTEGER,
     retirado: Sequelize.BOOLEAN,
-    // dt_retirada: Sequelize.DATE
+    dt_retirada: Sequelize.DATE
 });

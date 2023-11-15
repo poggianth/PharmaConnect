@@ -1,0 +1,36 @@
+version: "2"
+
+services:
+  pharmaconnect-db:
+    image: mysql
+    restart:
+      unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=pharmaconnect
+      - MYSQL_TCP_PORT=3306
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-hlocalhost"]
+      timeout: 30s
+      retries: 5
+    
+
+  pharmaconnect-app:
+    depends_on:
+      - pharmaconnect-db
+    build: 
+      context: .
+      dockerfile: dockerfile
+    restart:
+      unless-stopped
+    command: npm start
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/app
+
+
