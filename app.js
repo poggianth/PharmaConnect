@@ -33,7 +33,7 @@ app.get("/medicamentos/consultar/:codigo_remedio", (req, res) => {
     });
 });
 
-app.post("/medicamentos/consultar_estoque", (req, res) => {
+app.get("/medicamentos/consultar_estoque", (req, res) => {
   // id da unidade de saúde atual - será pego via sessão
   const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.body;
 
@@ -56,17 +56,14 @@ app.post("/medicamentos/consultar_estoque", (req, res) => {
     });
 });
 
-app.post(
-  "/medicamentos/consultar/unidades",
-  consulta_medicamentos_outras_unidades
-);
+app.get("/medicamentos/outras_unidades", consulta_medicamentos_outras_unidades);
 
-app.post("/medicamentos/agendar_retirada", agendar_retirada);
-
-app.post(
+app.get(
   "/ordens_retirada/consultar_ordens_retiradas",
   consultar_ordens_retiradas
 );
+
+app.post("/medicamentos/agendar_retirada", agendar_retirada);
 
 app.post("/ordens_retirada/confirmar_ordem_retirada", confirmar_ordem_retirada);
 
@@ -120,17 +117,22 @@ async function agendar_retirada(req, res) {
         cpf: cpf_cliente,
       },
     });
-
-    const novo_agendamento = await Ordens_retirada.create({
-      id_cliente: cliente_requisitante.id,
-      codigo_medicamento: codigo_medicamento,
-      qtd_solicitado: qtd_desejada,
-      id_unidade_saude: id_unidade_atual,
-      retirado: false,
-    });
-
-    console.log(`novo_agendamento: ${novo_agendamento}`);
-    res.json({ novo_agendamento: novo_agendamento });
+    
+    if(cliente_requisitante){
+      const novo_agendamento = await Ordens_retirada.create({
+        id_cliente: cliente_requisitante.id,
+        codigo_medicamento: codigo_medicamento,
+        qtd_solicitado: qtd_desejada,
+        id_unidade_saude: id_unidade_atual,
+        retirado: false,
+      });
+  
+      console.log(`novo_agendamento: ${novo_agendamento}`);
+      res.json({ novo_agendamento: novo_agendamento });
+    } else{
+      console.log("CPF não encontrado!")
+      res.status(500).json({ error: `CPF ${cpf_cliente} não encontrado` });
+    }
   } catch (error) {
     console.log(`Erro ao agendar retirada: ${error}`);
     res.status(500).json({ error: "Erro interno no servidor" });
@@ -182,7 +184,7 @@ async function confirmar_ordem_retirada(req, res) {
       // Subtrai a quantidade em estoque
       item_estoque.set({
         qtd_atual: item_estoque.qtd_atual - ordem_retirada.qtd_solicitado,
-        dt_retirada: Date.now()
+        dt_retirada: Date.now(),
       });
 
       await item_estoque.save();
