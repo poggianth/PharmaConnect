@@ -33,9 +33,9 @@ app.get("/medicamentos/consultar/:codigo_remedio", (req, res) => {
     });
 });
 
-app.get("/medicamentos/consultar_estoque", (req, res) => {
+app.get("/medicamentos/consultar_estoque/:id_unidade_atual/:qtd_desejada/:codigo_medicamento", (req, res) => {
   // id da unidade de saúde atual - será pego via sessão
-  const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.body;
+  const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.params;
 
   Itens_estoque.findAll({
     where: {

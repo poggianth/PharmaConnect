@@ -1,0 +1,12 @@
+// Inclui o módulo para gerenciar diretórios e caminhos
+import { resolve } from 'path'
+
+// Indica o local dos diretórios relacionado ao banco de dados
+const config = {
+  'config': resolve('db', 'config', 'database.json'),
+  'models-path': resolve('db', 'models'),
+  'seeders-path': resolve('db', 'seeders'),
+  'migrations-path': resolve('db', 'migrations')
+};
+
+export default config;
