@@ -1,4 +1,4 @@
-import { Sequelize, sequelize } from './db.js';
+import { Sequelize, sequelize } from './db.mjs';
 
 export const Medicamentos = sequelize.define('medicamentos', {
     codigo: Sequelize.STRING,

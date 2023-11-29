@@ -4,11 +4,11 @@ const app = express();
 const port = 3000;
 
 // Models
-import { Medicamentos } from "./src/models/Medicamentos.js";
-import { Itens_estoque } from "./src/models/Itens_estoque.js";
-import { Distancias } from "./src/models/Distancias.js";
-import { Clientes } from "./src/models/Clientes.js";
-import { Ordens_retirada } from "./src/models/Ordens_retirada.js";
+import { Medicamentos } from "./src/models/Medicamentos.mjs";
+import { Itens_estoque } from "./src/models/Itens_estoque.mjs";
+import { Distancias } from "./src/models/Distancias.mjs";
+import { Clientes } from "./src/models/Clientes.mjs";
+import { Ordens_retirada } from "./src/models/Ordens_retirada.mjs";
 
 // Config JSON response
 app.use(express.json());
@@ -95,7 +95,7 @@ async function consulta_medicamentos_outras_unidades(req, res) {
       limit: 3,
     });
 
-    res.json({unidades_proximas_disponiveis});
+    res.send(unidades_proximas_disponiveis);
   } catch (error) {
     console.error(`Erro ao obter unidades próximas: ${error}`);
     res.status(500).json({ error: "Erro interno do servidor" });

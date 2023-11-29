@@ -1,4 +1,4 @@
-import { Sequelize, sequelize } from './db.js';
+import { Sequelize, sequelize } from './db.mjs';
 
 export const Ordens_retirada = sequelize.define('ordens_agendamento', {
     id_cliente: {

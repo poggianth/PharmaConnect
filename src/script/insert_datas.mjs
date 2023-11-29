@@ -1,9 +1,9 @@
-import { Clientes } from '../models/Clientes.js';
-import { Distancias } from '../models/Distancias.js'
-import { Itens_estoque } from '../models/Itens_estoque.js'
-import { Medicamentos } from '../models/Medicamentos.js'
-import { Ordens_retirada } from '../models/Ordens_retirada.js'
-import { Unidades_saude } from '../models/Unidades_saude.js'
+import { Clientes } from '../models/Clientes.mjs';
+import { Distancias } from '../models/Distancias.mjs'
+import { Itens_estoque } from '../models/Itens_estoque.mjs'
+import { Medicamentos } from '../models/Medicamentos.mjs'
+import { Ordens_retirada } from '../models/Ordens_retirada.mjs'
+import { Unidades_saude } from '../models/Unidades_saude.mjs'
 
 // Inserir registros para Unidades_saude
 Unidades_saude.bulkCreate([

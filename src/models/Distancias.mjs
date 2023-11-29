@@ -1,4 +1,4 @@
-import { Sequelize, sequelize } from "./db.js";
+import { Sequelize, sequelize } from "./db.mjs";
 
 export const Distancias = sequelize.define('distancias', {
     id_unidade_saude_origem: Sequelize.INTEGER,

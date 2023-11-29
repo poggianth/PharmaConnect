@@ -1,4 +1,4 @@
-import { Sequelize, sequelize } from './db.js';
+import { Sequelize, sequelize } from './db.mjs';
 
 export const Itens_estoque = sequelize.define('itens_estoque', {
     id_unidade_saude: Sequelize.INTEGER,
