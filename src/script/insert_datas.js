@@ -72,11 +72,6 @@ Distancias.bulkCreate([
   // Unidade 1 para todas as outras unidades
   {
     id_unidade_saude_origem: 1,
-    id_unidade_saude_destino: 1,
-    distancia_total: 0.0,
-  },
-  {
-    id_unidade_saude_origem: 1,
     id_unidade_saude_destino: 2,
     distancia_total: 15.2,
   },
@@ -101,11 +96,6 @@ Distancias.bulkCreate([
     id_unidade_saude_origem: 2,
     id_unidade_saude_destino: 1,
     distancia_total: 15.2,
-  },
-  {
-    id_unidade_saude_origem: 2,
-    id_unidade_saude_destino: 2,
-    distancia_total: 0.0,
   },
   {
     id_unidade_saude_origem: 2,
@@ -136,11 +126,6 @@ Distancias.bulkCreate([
   },
   {
     id_unidade_saude_origem: 3,
-    id_unidade_saude_destino: 3,
-    distancia_total: 0.0,
-  },
-  {
-    id_unidade_saude_origem: 3,
     id_unidade_saude_destino: 4,
     distancia_total: 16.5,
   },
@@ -168,11 +153,6 @@ Distancias.bulkCreate([
   },
   {
     id_unidade_saude_origem: 4,
-    id_unidade_saude_destino: 4,
-    distancia_total: 0.0,
-  },
-  {
-    id_unidade_saude_origem: 4,
     id_unidade_saude_destino: 5,
     distancia_total: 8.3,
   },
@@ -197,11 +177,6 @@ Distancias.bulkCreate([
     id_unidade_saude_origem: 5,
     id_unidade_saude_destino: 4,
     distancia_total: 8.3,
-  },
-  {
-    id_unidade_saude_origem: 5,
-    id_unidade_saude_destino: 5,
-    distancia_total: 0.0,
   },
 ]);
 

@@ -56,19 +56,16 @@ app.get("/medicamentos/consultar_estoque/:id_unidade_atual/:qtd_desejada/:codigo
     });
 });
 
-app.get("/medicamentos/outras_unidades", consulta_medicamentos_outras_unidades);
+app.get("/medicamentos/outras_unidades/:id_unidade_atual/:qtd_desejada/:codigo_medicamento", consulta_medicamentos_outras_unidades);
 
-app.get(
-  "/ordens_retirada/consultar_ordens_retiradas",
-  consultar_ordens_retiradas
-);
+app.get("/ordens_retirada/consultar_ordens_retiradas/:id_unidade",consultar_ordens_retiradas);
 
 app.post("/medicamentos/agendar_retirada", agendar_retirada);
 
 app.post("/ordens_retirada/confirmar_ordem_retirada", confirmar_ordem_retirada);
 
 async function consulta_medicamentos_outras_unidades(req, res) {
-  const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.body;
+  const { id_unidade_atual, codigo_medicamento, qtd_desejada } = req.params;
 
   try {
     const itemEstoqueResult = await Itens_estoque.findAll({
@@ -98,9 +95,7 @@ async function consulta_medicamentos_outras_unidades(req, res) {
       limit: 3,
     });
 
-    res.json({
-      unidades_proximas_disponiveis,
-    });
+    res.json({unidades_proximas_disponiveis});
   } catch (error) {
     console.error(`Erro ao obter unidades próximas: ${error}`);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -108,8 +103,7 @@ async function consulta_medicamentos_outras_unidades(req, res) {
 }
 
 async function agendar_retirada(req, res) {
-  const { id_unidade_atual, codigo_medicamento, qtd_desejada, cpf_cliente } =
-    req.body;
+  const { id_unidade_atual, codigo_medicamento, qtd_desejada, cpf_cliente } = req.body;
 
   try {
     const cliente_requisitante = await Clientes.findOne({
@@ -140,7 +134,7 @@ async function agendar_retirada(req, res) {
 }
 
 async function consultar_ordens_retiradas(req, res) {
-  const { id_unidade } = req.body;
+  const { id_unidade } = req.params;
 
   try {
     const ordens_retidas = await Ordens_retirada.findAll({
