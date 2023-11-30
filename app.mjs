@@ -1,5 +1,6 @@
 import express from "express";
 import { Op } from "sequelize";
+import cors from "cors";
 const app = express();
 const port = 3000;
 
@@ -9,6 +10,7 @@ import { Itens_estoque } from "./src/models/Itens_estoque.mjs";
 import { Distancias } from "./src/models/Distancias.mjs";
 import { Clientes } from "./src/models/Clientes.mjs";
 import { Ordens_retirada } from "./src/models/Ordens_retirada.mjs";
+import { Unidades_saude } from "./src/models/Unidades_saude.mjs";
 
 // Config JSON response
 app.use(express.json());
@@ -83,7 +85,7 @@ async function consulta_medicamentos_outras_unidades(req, res) {
     );
     console.log("id_unidades_com_remedio: " + id_unidades_com_remedio);
 
-    const unidades_proximas_disponiveis = await Distancias.findAll({
+    const unidades_proximas = await Distancias.findAll({
       attributes: ["id_unidade_saude_destino", "distancia_total"],
       where: {
         id_unidade_saude_origem: id_unidade_atual,
@@ -94,6 +96,17 @@ async function consulta_medicamentos_outras_unidades(req, res) {
       order: [["distancia_total", "ASC"]],
       limit: 3,
     });
+
+    let unidades_proximas_disponiveis = []
+    for (let c = 0; c < unidades_proximas.length; c++) {
+      unidades_proximas_disponiveis.push(
+        await Unidades_saude.findOne({
+          where:{
+            id: unidades_proximas[c].id_unidade_saude_destino
+          }
+        })
+      )
+    }
 
     res.send(unidades_proximas_disponiveis);
   } catch (error) {
