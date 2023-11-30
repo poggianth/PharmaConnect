@@ -13,7 +13,7 @@ import { Ordens_retirada } from "./src/models/Ordens_retirada.mjs";
 import { Unidades_saude } from "./src/models/Unidades_saude.mjs";
 
 // Config JSON response
-app.use(express.json());
+app.use(express.json(), cors());
 
 app.get("/", (req, res) => {
   console.log("Home");
