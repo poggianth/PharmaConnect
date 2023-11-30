@@ -24,10 +24,10 @@ services:
       - pharmaconnect-db
     build: 
       context: .
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     restart:
       unless-stopped
-    command: npm start
+    command: sh -c "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm start"
     ports:
       - "3000:3000"
     volumes:
