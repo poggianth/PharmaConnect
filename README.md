@@ -15,3 +15,7 @@
 Utilizamos 2 funcionalidades no módulo Sequelize:
 - **Migrations:** Cria toda a estrutura das tabelas no banco de dados.
 - **Seeders:** Insere registros nas tabelas para testarmos a aplicação.
+
+## Divisão de tarefas
+Eu fiquei responsável pelo back-end.
+Já o front-end, foi desenvolvido pelo ([Nicolas Rodrigues](https://github.com/NicolasRSJ/projeto-integrador))
