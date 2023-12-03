@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('ordens_retirada', [
+    await queryInterface.bulkInsert('ordens_retiradas', [
       {
         id_cliente: 1,
         codigo_medicamento: "ABC123",
@@ -58,6 +58,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('ordens_retirada', null, {});
+    await queryInterface.bulkDelete('ordens_retiradas', null, {});
   }
 };

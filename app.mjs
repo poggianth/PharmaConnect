@@ -2,14 +2,14 @@ import express from "express";
 import { Op } from "sequelize";
 import cors from "cors";
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // Models
 import { Medicamentos } from "./src/models/Medicamentos.mjs";
 import { Itens_estoque } from "./src/models/Itens_estoque.mjs";
 import { Distancias } from "./src/models/Distancias.mjs";
 import { Clientes } from "./src/models/Clientes.mjs";
-import { Ordens_retirada } from "./src/models/Ordens_retirada.mjs";
+import { Ordens_retirada } from "./src/models/Ordens_retiradas.mjs";
 import { Unidades_saude } from "./src/models/Unidades_saude.mjs";
 
 // Config JSON response
@@ -157,7 +157,7 @@ async function consultar_ordens_retiradas(req, res) {
     });
 
     console.log(`Ordens de retirada: ${ordens_retidas}`);
-    res.json({ ordens_retidas: ordens_retidas });
+    res.send(ordens_retidas);
   } catch (error) {
     console.log(`Erro ao consultar as ordens de retirada: ${error}`);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -184,14 +184,13 @@ async function confirmar_ordem_retirada(req, res) {
           id_unidade_saude: ordem_retirada.id_unidade_saude,
           qtd_atual: {
             [Op.gte]: ordem_retirada.qtd_solicitado,
-          },
+          }
         },
       });
 
       // Subtrai a quantidade em estoque
       item_estoque.set({
-        qtd_atual: item_estoque.qtd_atual - ordem_retirada.qtd_solicitado,
-        dt_retirada: Date.now(),
+        qtd_atual: item_estoque.qtd_atual - ordem_retirada.qtd_solicitado
       });
 
       await item_estoque.save();
@@ -199,6 +198,7 @@ async function confirmar_ordem_retirada(req, res) {
       // Confirma a ordem de retirada
       ordem_retirada.set({
         retirado: true,
+        dt_retirada: Date.now(),
       });
 
       await ordem_retirada.save();

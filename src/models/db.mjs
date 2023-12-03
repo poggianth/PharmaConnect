@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 
 
 const sequelize = new Sequelize("pharmaconnect", "root", "123456", {
-  host: "localhost",
+  host: "host.docker.internal",
   dialect: "mysql",
 });
 

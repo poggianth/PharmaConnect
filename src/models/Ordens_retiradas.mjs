@@ -1,6 +1,6 @@
 import { Sequelize, sequelize } from './db.mjs';
 
-export const Ordens_retirada = sequelize.define('ordens_agendamento', {
+export const Ordens_retirada = sequelize.define('ordens_retiradas', {
     id_cliente: {
         type: Sequelize.INTEGER,
         allowNull: false

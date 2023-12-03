@@ -11,12 +11,8 @@ services:
       - MYSQL_TCP_PORT=3306
     ports:
       - 3306:3306
-    expose:
-      - 3306
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-hlocalhost"]
-      timeout: 30s
-      retries: 5
+    volumes:
+      - mysql-data:/var/lib/mysql
     
 
   pharmaconnect-app:
@@ -29,8 +25,9 @@ services:
       unless-stopped
     command: sh -c "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm start"
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
       - .:/usr/app
 
-
+volumes:
+  mysql-data:  # Definição do volume
