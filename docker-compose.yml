@@ -11,8 +11,6 @@ services:
       - MYSQL_TCP_PORT=3306
     ports:
       - 3306:3306
-    volumes:
-      - mysql-data:/var/lib/mysql
     
 
   pharmaconnect-app:
@@ -28,6 +26,3 @@ services:
       - "3001:3001"
     volumes:
       - .:/usr/app
-
-volumes:
-  mysql-data:  # Definição do volume

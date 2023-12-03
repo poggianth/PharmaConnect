@@ -174,27 +174,12 @@ async function confirmar_ordem_retirada(req, res) {
       },
     });
 
+    console.log(`ordem_retirada: ${ordem_retirada}`)
+
     // Verifica se a retirada já foi confirmada
     if (ordem_retirada.retirado) {
       res.status(400).json({ aviso: "A ordem de retirada já foi confirmada!" });
     } else {
-      const item_estoque = await Itens_estoque.findOne({
-        where: {
-          codigo_medicamento: ordem_retirada.codigo_medicamento,
-          id_unidade_saude: ordem_retirada.id_unidade_saude,
-          qtd_atual: {
-            [Op.gte]: ordem_retirada.qtd_solicitado,
-          }
-        },
-      });
-
-      // Subtrai a quantidade em estoque
-      item_estoque.set({
-        qtd_atual: item_estoque.qtd_atual - ordem_retirada.qtd_solicitado
-      });
-
-      await item_estoque.save();
-
       // Confirma a ordem de retirada
       ordem_retirada.set({
         retirado: true,
@@ -202,6 +187,8 @@ async function confirmar_ordem_retirada(req, res) {
       });
 
       await ordem_retirada.save();
+      
+      // Apenas confirma a ordem de retirada, pois, a baixa do estoque será feita no sistema da farmácia!
 
       res.json({ ordem_retirada: ordem_retirada });
     }
